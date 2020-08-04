@@ -77,7 +77,7 @@ class HAProxySocket(object):
     for line in output.splitlines():
       try:
         key,val = line.split(':')
-      except ValueError, e:
+      except ValueError as e:
         continue
       result[key.strip()] = val.strip()
     return result
@@ -98,7 +98,7 @@ def get_stats():
   try:
     server_info = haproxy.get_server_info()
     server_stats = haproxy.get_server_stats()
-  except socket.error, e:
+  except socket.error as e:
     logger('warn', "status err Unable to connect to HAProxy socket at %s" % HAPROXY_SOCKET)
     return stats
 
@@ -106,7 +106,7 @@ def get_stats():
     for key,val in server_info.items():
       try:
         stats[key] = int(val)
-      except (TypeError, ValueError), e:
+      except (TypeError, ValueError) as e:
         pass
 
   for statdict in server_stats:
@@ -118,7 +118,7 @@ def get_stats():
       metricname = METRIC_DELIM.join([ statdict['svname'].lower(), statdict['pxname'].lower(), key ])
       try:
         stats[metricname] = int(val)
-      except (TypeError, ValueError), e:
+      except (TypeError, ValueError) as e:
         pass
   return stats
 
@@ -159,7 +159,7 @@ def read_callback():
     if not value in METRIC_TYPES:
       try:
         key_prefix, key_root = key.rsplit(METRIC_DELIM,1)
-      except ValueError, e:
+      except ValueError as e:
         pass
     if not key_root in METRIC_TYPES:
       continue
